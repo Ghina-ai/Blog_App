@@ -1,4 +1,6 @@
+import { resolve } from "node:dns";
 import cloudinary from "../config/cloudinary";
+import { rejects } from "node:assert";
 
 //helper upload ke cloudinaary via stream buffer
 export const uploadToCloudinary = (fileBuffer: Buffer): Promise<{ secure_url: string; public_id: string }> => {
@@ -19,3 +21,25 @@ export const uploadToCloudinary = (fileBuffer: Buffer): Promise<{ secure_url: st
         uploadStream.end(fileBuffer);
     });
 };
+
+//delete from cloudinary 
+export const deleteFromCloudinary = (
+    publicId: string 
+): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.destroy(
+            publicId,
+            {
+                resource_type: "image",
+            },
+            (error) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                resolve();
+            }
+        );
+    });
+}
