@@ -7,7 +7,6 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../../servies/cloudina
 
 
 export class PostsController {
-
     // CREATE
     createPosts  = async(req: Request, res: Response) => {
         try {
