@@ -14,6 +14,8 @@ import {
 } from "../../servies/cloudinary.service";
 
 export class PostsController {
+  
+
   //DELETE
     deletePost = async (req: Request, res: Response) => {
       try {
