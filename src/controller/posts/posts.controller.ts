@@ -14,52 +14,43 @@ import {
 } from "../../servies/cloudinary.service";
 
 export class PostsController {
-  // CREATE
-  createPosts = async (req: Request, res: Response) => {
-    try {
-      const validateData = createPostSchema.parse(req.body);
-      const { userId, title, content, categoryId } = validateData;
-
-      let imageUrl: string | undefined;
-      let imagePublicId: string | undefined;
-
-      if (req.file) {
-        const uploadResult = await uploadToCloudinary(req.file.buffer);
-        imageUrl = uploadResult.secure_url;
-        imagePublicId = uploadResult.public_id;
+  // GUEST ALL POST
+    getPosts = async (req: Request, res: Response) => {
+      try {
+        const posts = await db
+          .select({
+            id: postsTable.id,
+            title: postsTable.title,
+            content: postsTable.content,
+            imageUrl: postsTable.imageUrl,
+            createdAt: postsTable.createdAt,
+            categoryId: postsTable.categoryId,
+            categoryName: categoriesTable.name,
+          })
+          .from(postsTable)
+          .leftJoin(
+            categoriesTable,
+            eq(postsTable.categoryId, categoriesTable.id),
+          )
+          .where(eq(postsTable.status, "published"))
+          .orderBy(desc(postsTable.createdAt));
+  
+        return res.status(200).json({
+          success: true,
+          message: "get posts successfully",
+          data: {
+            posts: posts,
+          },
+        });
+      } catch (error: any) {
+        console.error("get posts error:", error);
+  
+        return res.status(500).json({
+          success: false,
+          message: "internal server error",
+          error: error.message,
+        });
       }
-
-      const [insertedPost] = await db
-        .insert(postsTable)
-        .values({
-          userId,
-          title,
-          content,
-          categoryId,
-          imageUrl,
-          imagePublicId,
-        })
-        .$returningId();
-
-      const newPost = await db.query.postsTable.findFirst({
-        where: eq(postsTable.id, insertedPost.id),
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: "post created successfully",
-        data: {
-          post: newPost,
-        },
-      });
-    } catch (error) {
-      console.error("create post error:", error);
-      return res.status(500).json({
-        success: false,
-        message: "terjadi kesalahan pada server",
-        error: error instanceof Error ? error.message : error,
-      });
-    }
-  };
+    };
 
 }
