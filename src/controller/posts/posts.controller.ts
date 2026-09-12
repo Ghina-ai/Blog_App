@@ -6,7 +6,7 @@ import {
   updatePostSchema,
 } from "../../validation/posts.validation";
 import { db } from "../../config/db";
-import { categoriesTable, postsTable } from "../../config/schema";
+import { categoriesTable, postsTable, usersTable } from "../../config/schema";
 import { and, eq, desc } from "drizzle-orm";
 import {
   deleteFromCloudinary,
@@ -18,8 +18,9 @@ export class PostsController {
     createPosts = async (req: Request, res: Response) => {
       try {
       const validateData = createPostSchema.parse(req.body);
-      const { userId, title, content, categoryId } = validateData;
-
+      const { title, content, categoryId } = validateData;
+      const userId = 4;
+      
       let imageUrl: string | undefined;
       let imagePublicId: string | undefined;
 
@@ -32,12 +33,12 @@ export class PostsController {
       const [insertedPost] = await db
         .insert(postsTable)
         .values({
-        userId,
-        title,
-        content,
-        categoryId,
-        imageUrl,
-        imagePublicId,
+          userId,
+          title,
+          content,
+          categoryId,
+          imageUrl,
+          imagePublicId,
         })
         .$returningId();
 
@@ -72,14 +73,19 @@ export class PostsController {
         content: postsTable.content,
         imageUrl: postsTable.imageUrl,
         createdAt: postsTable.createdAt,
+
         categoryId: postsTable.categoryId,
         categoryName: categoriesTable.name,
+
+
         })
         .from(postsTable)
+
         .leftJoin(
         categoriesTable,
         eq(postsTable.categoryId, categoriesTable.id),
         )
+
         .where(eq(postsTable.status, "published"))
         .orderBy(desc(postsTable.createdAt));
 
@@ -219,7 +225,6 @@ export class PostsController {
       }
     };
 
-
   //DELETE
     deletePost = async (req: Request, res: Response) => {
       try {
@@ -258,3 +263,5 @@ export class PostsController {
     };
 
 }
+
+export default new PostsController();
