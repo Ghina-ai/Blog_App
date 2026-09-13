@@ -5,6 +5,22 @@ export const userIdSchema = z.object({
   userId: z.coerce.number().int().positive(),
 });
 
+// TAMBAHKAN INI
+export const createUserSchema = z.object({
+  username: z
+    .string()
+    .min(3, "username minimal 3 karakter")
+    .max(50, "username maksimal 50 karakter"),
+
+  email: z
+    .string()
+    .email(),
+
+  bio: z
+    .string()
+    .optional(),
+});
+
 // VALIDASI UPDATE PROFILE
 export const updateProfileSchema = z.object({
   username: z
