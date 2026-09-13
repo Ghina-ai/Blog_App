@@ -2,7 +2,7 @@ import multer from "multer";
 
 const storage = multer.memoryStorage();
 
-export const uploadSingleImage = multer({
+const upload = multer({
     storage,
     limits: {
         fileSize: 5 * 1024 * 1024, //max 5MB
@@ -14,4 +14,6 @@ export const uploadSingleImage = multer({
             cb(new Error("hanya file gambar yang diperbolehkan!!"));
         }
     },
-}).single("image"); //"image" adalah nama key/field saat upload file
+});//"image" adalah nama key/field saat upload file
+
+export const uploadSingleImage = upload.single("image");

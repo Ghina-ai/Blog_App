@@ -232,7 +232,15 @@ export class UsersController {
         });
       }
       
-      
+      let profileImage = existingUser.profileImage;
+
+      if (req.file) {
+        const uploadResult = await uploadToCloudinary(
+          req.file.buffer
+        );
+
+        profileImage = uploadResult.secure_url;
+      }
 
 
       // 4. UPDATE PROFILE
@@ -240,7 +248,11 @@ export class UsersController {
         .update(usersTable)
         .set({
           ...validateData,
-        })
+
+          ...(req.file && {
+          profileImage: profileImage,
+        }),
+      })
         .where(eq(usersTable.id, userId));
 
       // 5. AMBIL DATA TERBARU
