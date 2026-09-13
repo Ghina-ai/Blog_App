@@ -14,8 +14,7 @@ export const usersTable = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
   username: varchar("username", { length: 50 }).notNull(),
   email: varchar("email", { length: 100 }).notNull().unique(),
-  password: varchar("password", { length: 255 }).notNull(),
-  role: mysqlEnum("role", USER_ROLES).notNull().default("user"),
+  profileImage: text("profile_image"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
 });
@@ -38,20 +37,6 @@ export const postsTable = mysqlTable("posts", {
   imageUrl: text("image_url"), // Kolom untuk simpan URL gambar
   imagePublicId: varchar("image_public_id", { length: 255 }), // Kolom untuk simpan Public ID Cloudinary
   status: mysqlEnum("status", POST_STATUS).notNull().default("published"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
-});
-
-// COMMENTS
-export const commentsTable = mysqlTable("comments", {
-  id: int("id").autoincrement().primaryKey(),
-  postId: int("post_id")
-    .notNull()
-    .references(() => postsTable.id, { onDelete: "cascade" }),
-  userId: int("user_id")
-    .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
-  comment: text("comment").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
 });
