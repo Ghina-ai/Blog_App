@@ -76,7 +76,10 @@ export class PostsController {
 
         categoryId: postsTable.categoryId,
         categoryName: categoriesTable.name,
-
+        
+        userId: postsTable.userId,
+        username: usersTable.username,
+        profileImage: usersTable.profileImage,
 
         })
         .from(postsTable)
@@ -84,6 +87,11 @@ export class PostsController {
         .leftJoin(
         categoriesTable,
         eq(postsTable.categoryId, categoriesTable.id),
+        )
+
+        .leftJoin(
+        usersTable,
+        eq(postsTable.userId, usersTable.id),
         )
 
         .where(eq(postsTable.status, "published"))

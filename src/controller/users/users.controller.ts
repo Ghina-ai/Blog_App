@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { userPostParamsSchema } from "../../validation/posts.validation";
 import { userIdSchema, updateProfileSchema, createUserSchema } from "../../validation/users.validation";
-import { postsTable, usersTable } from "../../config/schema";
+import { categoriesTable, postsTable, usersTable } from "../../config/schema";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../../config/db";
 import { uploadToCloudinary, deleteFromCloudinary } from "../../servies/cloudinary.service";
@@ -14,8 +14,28 @@ export class UsersController {
       const { userId } = validateParams;
 
       const post = await db
-        .select()
+        .select({
+          id: postsTable.id,
+          title: postsTable.title,
+          content: postsTable.content,
+          imageUrl: postsTable.imageUrl,
+          createdAt: postsTable.createdAt,
+
+          categoryId: postsTable.categoryId,
+          categoryName: categoriesTable.name,
+
+          username: usersTable.username,
+          profileImage: usersTable.profileImage,
+        })
         .from(postsTable)
+        .leftJoin(
+          categoriesTable,
+          eq(postsTable.categoryId, categoriesTable.id),
+        )
+        .leftJoin(
+          usersTable,
+          eq(postsTable.userId, usersTable.id),
+        )
         .where(
           and(
             eq(postsTable.userId, userId),
