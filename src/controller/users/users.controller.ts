@@ -234,13 +234,14 @@ export class UsersController {
       
       let profileImage = existingUser.profileImage;
 
-      if (req.file) {
-        const uploadResult = await uploadToCloudinary(
-          req.file.buffer
-        );
+if (req.file) {
+  const uploadResult = await uploadToCloudinary(
+    req.file.buffer
+  );
 
-        profileImage = uploadResult.secure_url;
-      }
+
+  profileImage = uploadResult.secure_url;
+}
 
 
       // 4. UPDATE PROFILE

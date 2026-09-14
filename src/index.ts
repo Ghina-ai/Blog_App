@@ -1,9 +1,15 @@
 import express from 'express';
+import cors from 'express';
+
 import postsRouter from "./routes/posts/posts.raoutes";
 import usersRouter from './routes/users/users.routes';
 import categoriesRouter from './routes/category/categorys.routes';
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+
 const PORT = 3000;
 
 app.use(express.json());
