@@ -1,3 +1,4 @@
+import { serial } from "drizzle-orm/mysql-core";
 import {
   mysqlTable,
   mysqlEnum,
@@ -6,23 +7,22 @@ import {
   text,
   timestamp,
 } from "drizzle-orm/mysql-core";
-export const USER_ROLES = ["user", "admin"] as const;
 export const POST_STATUS = ["delete", "published"] as const;
 
-// USERS
+//PROFILE
 export const usersTable = mysqlTable("users", {
-  id: int("id").autoincrement().primaryKey(),
+  id: serial("id").primaryKey(),
   username: varchar("username", { length: 50 }).notNull(),
   email: varchar("email", { length: 100 }).notNull().unique(),
-  password: varchar("password", { length: 255 }).notNull(),
-  role: mysqlEnum("role", USER_ROLES).notNull().default("user"),
+  profileImage: text("profile_image"),
+  bio: text("bio"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
 });
 
 // CATEGORIES
 export const categoriesTable = mysqlTable("categories", {
-  id: int("id").autoincrement().primaryKey(),
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
@@ -30,7 +30,7 @@ export const categoriesTable = mysqlTable("categories", {
 
 // POSTS
 export const postsTable = mysqlTable("posts", {
-  id: int("id").autoincrement().primaryKey(),
+  id: serial("id").primaryKey(),
   userId: int("user_id").notNull().references(() => usersTable.id, { onDelete: "cascade" }),
   categoryId: int("category_id").notNull().references(() => categoriesTable.id, { onDelete: "restrict" }),
   title: varchar("title", { length: 255 }).notNull(),
@@ -42,16 +42,4 @@ export const postsTable = mysqlTable("posts", {
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
 });
 
-// COMMENTS
-export const commentsTable = mysqlTable("comments", {
-  id: int("id").autoincrement().primaryKey(),
-  postId: int("post_id")
-    .notNull()
-    .references(() => postsTable.id, { onDelete: "cascade" }),
-  userId: int("user_id")
-    .notNull()
-    .references(() => usersTable.id, { onDelete: "cascade" }),
-  comment: text("comment").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow(),
-});
+
