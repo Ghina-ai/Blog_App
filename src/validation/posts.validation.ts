@@ -1,11 +1,9 @@
 import { z } from "zod";
 
 export const createPostSchema = z.object({
-    userId: z.coerce.number().int().positive(),
-
     title: z   
         .string()
-        .min(3, "title mminimal 5 karakter")
+        .min(3, "title mminimal 3 karakter")
         .max(225, "titlemaksimal 255 karakter"),
 
     content: z
@@ -20,10 +18,6 @@ export const postIdSchema = z.object({
     id: z.coerce.number().int().positive(),
 });
 
-//validasi buat data user login
-export const userIdSchema = z.object({
-    userId: z.coerce.number().int().positive(),
-});
 
 export const userPostParamsSchema = z.object({
     userId: z.coerce.number().int().positive(),
