@@ -1,13 +1,14 @@
-import { resolve } from "node:dns";
 import cloudinary from "../config/cloudinary";
-import { rejects } from "node:assert";
 
 //helper upload ke cloudinaary via stream buffer
-export const uploadToCloudinary = (fileBuffer: Buffer): Promise<{ secure_url: string; public_id: string }> => {
+export const uploadToCloudinary = (
+    fileBuffer: Buffer,
+    folder: string = "posts"
+): Promise<{ secure_url: string; public_id: string }> => {
     return new Promise((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
             {
-                folder: "posts",            //nama folder tujuan 
+                folder: folder,            //nama folder tujuan 
                 resource_type: "image",    // eksplisit tentukan tipe resource sebagai gambar 
             },
             (error: any, result: any) => {

@@ -1,12 +1,22 @@
 import { Router } from "express";
 import  UsersController  from "../../controller/users/users.controller";
+import { uploadSingleImage } from "../../middleware/upload.middleware";
 
 const router = Router();
 
-//USER : GET ALL DATA(POSTS)
-router.get('/:userId', UsersController.getPostByUserId);
+// CREATE USER
+router.post("/", uploadSingleImage, UsersController.createUser);
 
-//USER : GET DATA BY ID
+//GET PROFILE
+router.get('/:userId/profile', UsersController.getProfile);
+
+// UPDATE PROFILE
+router.patch("/:userId/profile", uploadSingleImage, UsersController.updateProfile);
+
+//GET DATA BY ID
 router.get('/:userId/posts/:postId', UsersController.getUserPost);
+
+// GET ALL POST BY USER
+router.get("/:userId/posts", UsersController.getPostByUserId);
 
 export default router;

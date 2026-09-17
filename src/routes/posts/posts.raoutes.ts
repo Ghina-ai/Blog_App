@@ -1,26 +1,26 @@
 import { Router } from "express";
 import { uploadSingleImage } from "../../middleware/upload.middleware";
-import PostsController from "../../controller/posts/posts.controller";
+import postsController from "../../controller/posts/posts.controller";
 
 const router = Router();
 
 // CREATE
-router.post("/", uploadSingleImage, PostsController.createPosts);
+router.post("/", uploadSingleImage, postsController.createPosts);
 
 // GET POST ALL
-router.get("/", PostsController.getPosts);
+router.get("/", postsController.getPosts);
 
 // GET POST BY ID
-router.get("/:id", PostsController.getPostById);
+router.get("/:id", postsController.getPostById);
 
 // UPDATE
 router.patch(
   "/:id",
   uploadSingleImage,
-  PostsController.updatePost,
+  postsController.updatePost,
 );
 
 // DELTE
-router.delete("/:id", PostsController.deletePost);
+router.delete("/:id", postsController.deletePost);
 
 export default router;
